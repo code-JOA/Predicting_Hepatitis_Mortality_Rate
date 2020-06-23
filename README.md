@@ -1,7 +1,8 @@
-# Predicting_Hepititis_Mortality_Rate
+# Predicting_Hepatitis_Mortality_Rate
 # Author : Joshua Owusu Ankomah
 
 # DataSource : uci machine learing reporsitory
+https://archive.ics.uci.edu/ml/datasets/Hepatitis
 
 # Deliverables: 
 - Predict if a patient will live or die based on the parameters using ML
