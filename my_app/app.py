@@ -57,6 +57,27 @@ def main():
                     df = pd.read_csv("data/cleaned_data.csv")
                     st.dataframe(df)
 
+                    # freq distribution plot
+                    freq_df = pd.read_csv("data/Age_frq_Dist.csv")
+                    st.bar_chart(freq_df["count"])
+                    st.dataframe(freq_df)
+
+                    df['class'].value_counts().plot(kind="bar")
+                    st.pyplot()
+
+                    if st.checkbox("Area Chart"):
+                        all_columns = df.columns.to_list()
+                        feat_choices = st.multiselect("Choose a feature" , all_columns)
+                        new_df = df[feat_choices]
+                        st.area_chart(new_df)
+
+                    if st.checkbox("Bar Plot"):
+                        all_columns = df.columns.to_list()
+                        feat_choices = st.multiselect("Choose a feature" , all_columns)
+                        new_df = df[feat_choices]
+                        st.area_chart(new_df)
+
+
                 elif activity == "Prediction":
                     st.subheader("Predictive Analytics")
 
