@@ -4,8 +4,9 @@ import numpy as np
 import os
 import joblib
 import matplotlib.pyplot as plt
-%matplotlib.use("Agg")
-import seaborn as sns
+import matplotlib
+matplotlib.use("Agg")
+# import seaborn as sns
 
 
 def main():
@@ -35,7 +36,20 @@ def main():
                 elif actvitiy == "Predicition":
                     st.subheader("Predictive Analytics")
 
-            else:st.warning("Incorrect Username/Password")            
+            else:st.warning("Incorrect Username/Password")
+
+
+        elif choice == "Signup":
+            new_username = st.text_input("User name")
+            new_password = st.text_input("Password" , type='password')
+
+            confirm_password = st.text_input("confirm_Password" , type="password")
+            if new_password == confirm_password:
+                st.success("Password confirmed")
+            else:
+                st.warning("Password not the same")
+
+            if st.button("Submit"):
 
 
 
