@@ -13,6 +13,18 @@ import matplotlib
 matplotlib.use("Agg")
 
 
+from managed_db import *
+
+# password
+def generate_hashes(password):
+    return hashlib.sha256(str.encode(password)).hexdigest()
+
+
+def verify_hashes(password,hashed_text):
+    if generate_hashes(password) == hashed_text:
+        return hashed_text
+    return False
+
 
 
 def main():
@@ -32,17 +44,24 @@ def main():
         username = st.sidebar.text_input("Username")
         password = st.sidebar.text_input("Password",type="password")
         if st.sidebar.checkbox("Login"):
-            if password == "12345":
+            create_usertable()
+            hashed_pswd = generate_hashes(password)
+            result = login_user(username,verify_hashes(password,hashed_pswd))
+            # if password == "12345":
+            if result:
                 st.success("Welcome {}".format(username))
+
                 activity = st.selectbox("Activity",submenu)
                 if activity == "Plot":
                     st.subheader("Data Visualization Plot")
+                    df = pd.read_csv("data/cleaned_data.csv")
+                    st.dataframe(df)
 
                 elif activity == "Prediction":
                     st.subheader("Predictive Analytics")
-            # create_usertable()
 
-        else:st.warning("Incorrect Username/Password")
+            else:
+                st.warning("Incorrect Username/Password")
 
 
     elif choice == "SignUp":
@@ -56,9 +75,11 @@ def main():
             st.warning("Passwords not the same")
 
         if st.button("Submit"):
-            pass 
-            # st.success("Successfully Created New Account")
-            # st.info("Login To Get Started")
+            create_usertable()
+            hashed_new_password = generate_hashes(new_password)
+            add_userdata(new_username , hashed_new_password)
+            st.success("Successfully created new account")
+            st.info("Login To Get Started")
 
 
 
