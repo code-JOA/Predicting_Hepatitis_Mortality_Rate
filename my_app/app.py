@@ -25,6 +25,36 @@ def verify_hashes(password,hashed_text):
         return hashed_text
     return False
 
+feature_names_best = ["age","sex","steriod","antivirals","fatigue","spiders","ascites",
+                      "varices","bilirubin","alk_phosphate","sgot","albumin","protime","histology"]
+
+gender_dict = {"male":1,"female":2}
+feature_dict = {"No":1 , "Yes":2}
+
+
+def get_value(val,my_dict):
+    for key,value in my_dict.items():
+        if val == key:
+            return value
+
+
+def get_key(val,my_dict):
+    for key, value in my_dict.items():
+        if val == key:
+            return key
+
+
+def get_fvalue(val):
+    feature_dict = {"No":1,"Yes":2}
+    for key,value in feature_dict.items():
+        if val == key:
+            return value
+
+
+# loading ML models
+def load_model(model_file):
+    loaded_model = joblib.load(open(os.path.join(model_file) , "rb"))
+    return loaded_model
 
 
 def main():
@@ -62,8 +92,10 @@ def main():
                     st.bar_chart(freq_df["count"])
                     st.dataframe(freq_df)
 
+
                     df['class'].value_counts().plot(kind="bar")
                     st.pyplot()
+
 
                     if st.checkbox("Area Chart"):
                         all_columns = df.columns.to_list()
@@ -71,15 +103,30 @@ def main():
                         new_df = df[feat_choices]
                         st.area_chart(new_df)
 
-                    if st.checkbox("Bar Plot"):
-                        all_columns = df.columns.to_list()
-                        feat_choices = st.multiselect("Choose a feature" , all_columns)
-                        new_df = df[feat_choices]
-                        st.area_chart(new_df)
 
-
+                # prediction
                 elif activity == "Prediction":
                     st.subheader("Predictive Analytics")
+
+                    age = st.number_input("Age",7,80)
+                    sex = st.radio("Sex",tuple(gender_dict.keys()))
+                    steriod = st.radio("Do You Take Steriods?",tuple(feature_dict.keys()))
+                    antivirals = st.radio("Do You Take Antivirals?",tuple(feature_dict.keys()))
+                    fatique = st.radio("Do You Have Fatique",tuple(feature_dict.keys()))
+                    spiders = st.radio("Presence of Spider Naeve",tuple(feature_dict.keys()))
+                    ascites = st.selectbox("Ascites",tuple(feature_dict.keys()))
+                    varices = st.selectbox("Presence of Varices",tuple(feature_dict.keys()))
+                    bilirubin = st.number_input("bilirubin Content",0.0,8.0)
+                    alk_phosphate = st.number_input("Alkaline Phosphate Content",0.0,296.0)
+                    sgot = st.number_input("Sgot",0.0,648.0)
+                    albumin = st.number_input("Albumin",0.0,6.4)
+                    protime = st.number_input("Prothrombin Time",0.0,100.0)
+                    histology = st.radio("Histology",tuple(feature_dict.keys()))
+
+
+
+
+
 
             else:
                 st.warning("Incorrect Username/Password")
