@@ -1,7 +1,7 @@
 # Predicting_Hepatitis_Mortality_Rate
 # Author : Joshua Owusu Ankomah
 
-# DataSource : uci machine learing reporsitory
+# DataSource : uci machine learning reporsitory
 https://archive.ics.uci.edu/ml/datasets/Hepatitis
 
 # Deliverables: 
@@ -14,4 +14,4 @@ https://archive.ics.uci.edu/ml/datasets/Hepatitis
 + Build Model
 + Interpret Model
 + Serialization
-+ Productionize with Streamlit or Flask
++ Productionize with Streamlit
