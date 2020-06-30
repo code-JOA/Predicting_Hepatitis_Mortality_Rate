@@ -12,6 +12,9 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use("Agg")
 
+# Model Interpretting
+import lime
+import lime.lime_tabular
 
 from managed_db import *
 
@@ -60,6 +63,7 @@ def load_model(model_file):
 def main():
     """Mortality Prediction App"""
     st.title("Hepatitis Disease Mortality Prediction App")
+    # st.markdown(html_temp.format("royalblue"),unsafe_allow_html=True)
 
 
     menu = ["Home","Login","SignUp"]
@@ -112,7 +116,7 @@ def main():
                     sex = st.radio("Sex",tuple(gender_dict.keys()))
                     steroid = st.radio("Do You Take Steroids?",tuple(feature_dict.keys()))
                     antivirals = st.radio("Do You Take Antivirals?",tuple(feature_dict.keys()))
-                    fatique = st.radio("Do You Have Fatique",tuple(feature_dict.keys()))
+                    fatique = st.radio("Do You Have Fatique?",tuple(feature_dict.keys()))
                     spiders = st.radio("Presence of Spider Naeve",tuple(feature_dict.keys()))
                     ascites = st.selectbox("Ascites",tuple(feature_dict.keys()))
                     varices = st.selectbox("Presence of Varices",tuple(feature_dict.keys()))
@@ -122,14 +126,92 @@ def main():
                     albumin = st.number_input("Albumin",0.0,6.4)
                     protime = st.number_input("Prothrombin Time",0.0,100.0)
                     histology = st.radio("Histology",tuple(feature_dict.keys()))
-                    feature_list = [age,get_value(sex,gender_dict),get_fvalue(steroid),get_fvalue(antivirals),get_fvalue(spiders)
-                           ,get_fvalue(ascites),get_fvalue(varices),birirubin,alk_phosphate,sgot,albumin,int(protime),get_fvalue(histology)]
+                    feature_list = [age,get_value(sex,gender_dict),get_fvalue(steroid),get_fvalue(antivirals),get_fvalue(fatique),get_fvalue(spiders)
+                           ,get_fvalue(ascites),get_fvalue(varices),bilirubin,alk_phosphate,sgot,albumin,int(protime),get_fvalue(histology)]
                     st.write(len(feature_list))
                     st.write(feature_list)
                     pretty_result = {"age":age,"sex":sex,"steroid":steroid,"antivirals":antivirals,"fatique":fatique,"spiders":spiders,
                                   "ascites":ascites , "varices":varices ,"bilirubin":bilirubin,"alk_phosphate":alk_phosphate,"sgot":sgot,
                                   "albumin":albumin,"protime":protime,"histology":histology}
-                                         
+                    st.json(pretty_result)
+                    single_sample = np.array(feature_list).reshape(1,-1)
+
+                    # # Machine Learning models
+                    model_choice = st.selectbox("Select Model",["LR","KNN","DecisionTree"])
+
+                    if st.button("Predict"):
+                        if model_choice == "KNN":
+                            loaded_model = load_model("models/KNN_HepatitisB_model.pkl")
+                            prediction=loaded_model.predict(single_sample)
+                            pred_prob=loaded_model.predict_proba(single_sample)
+                        elif model_choice == "DecisionTree":
+                            loaded_model=load_model("models/decision_tree_clf_HepatitisB_model.pkl")
+                            prediction=loaded_model.predict(single_sample)
+                            pred_prob=loaded_model.predict_proba(single_sample)
+                        else:
+                            loaded_model = load_model("models/LogisticReg_HepatitisB_model.pkl")
+                            prediction=loaded_model.predict(single_sample)
+                            pred_prob=loaded_model.predict_proba(single_sample)
+
+                        # st.write(prediction)
+                        # 	# prediction_label = {"Die":1,"Live":2}
+    					# 	# final_result = get_key(prediction,prediction_label)
+                        if prediction == 1:
+                            st.warning("Patient Dies")
+    					# 		pred_probability_score = {"Die":pred_prob[0][0]*100,"Live":pred_prob[0][1]*100}
+    					# 		st.subheader("Prediction Probability Score using {}".format(model_choice))
+    					# 		st.json(pred_probability_score)
+    					# 		st.subheader("Prescriptive Analytics")
+    					# 		st.markdown(prescriptive_message_temp,unsafe_allow_html=True)
+                        else:
+                            st.success("Patient Lives")
+                            pred_probability_score = {"Die":pred_prob[0][0]*100,"Live":pred_prob[0][1]*100}
+                            st.subheader("Prediction Probability Score using {}".format(model_choice))
+                            st.json(pred_probability_score)
+
+                if st.checkbox("Interpret"):
+                    if model_choice == "KNN":
+                        loaded_model = load_model("models/KNN_HepatitisB_model.pkl")
+
+                    elif model_choice == "DecisionTree":
+                        loaded_model = load_model("models/decision_tree_clf_HepatitisB_model.pkl")
+
+                    else:
+                        loaded_model = load_model("models/LogisticReg_HepatitisB_model.pkl")
+
+
+                        # loaded_model = load_model("models/logistic_regression_model.pkl")
+                        # 1 Die and 2 Live
+                        df = pd.read_csv("data/cleaned_data.csv")
+                        x = df[['age', 'sex', 'steroid', 'antivirals','fatigue','spiders', 'ascites','varices', 'bilirubin', 'alk_phosphate', 'sgot', 'albumin', 'protime','histology']]
+                        feature_names = ['age', 'sex', 'steroid', 'antivirals','fatigue','spiders', 'ascites','varices', 'bilirubin', 'alk_phosphate', 'sgot', 'albumin', 'protime','histology']
+                        class_names = ['Die(1)','Live(2)']
+                        explainer = lime.lime_tabular.LimeTabularExplainer(x.values,feature_names=feature_names, class_names=class_names,discretize_continuous=True)
+                        # The Explainer Instance
+                        exp = explainer.explain_instance(np.array(feature_list), loaded_model.predict_proba,num_features=13, top_labels=1)
+                        exp.show_in_notebook(show_table=True, show_all=False)
+                        # exp.save_to_file('lime_oi.html')
+                        st.write(exp.as_list())
+                        new_exp = exp.as_list()
+                        label_limits = [i[0] for i in new_exp]
+                        # st.write(label_limits)
+                        label_scores = [i[1] for i in new_exp]
+                        plt.barh(label_limits,label_scores)
+                        st.pyplot()
+                        plt.figure(figsize=(20,10))
+                        fig = exp.as_pyplot_figure()
+                        st.pyplot()
+
+
+
+
+
+
+
+
+
+
+
 
 
 
