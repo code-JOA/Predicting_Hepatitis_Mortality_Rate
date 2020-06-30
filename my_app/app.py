@@ -25,7 +25,7 @@ def verify_hashes(password,hashed_text):
         return hashed_text
     return False
 
-feature_names_best = ["age","sex","steriod","antivirals","fatigue","spiders","ascites",
+feature_names_best = ["age","sex","steroid","antivirals","fatigue","spiders","ascites",
                       "varices","bilirubin","alk_phosphate","sgot","albumin","protime","histology"]
 
 gender_dict = {"male":1,"female":2}
@@ -110,7 +110,7 @@ def main():
 
                     age = st.number_input("Age",7,80)
                     sex = st.radio("Sex",tuple(gender_dict.keys()))
-                    steriod = st.radio("Do You Take Steriods?",tuple(feature_dict.keys()))
+                    steroid = st.radio("Do You Take Steroids?",tuple(feature_dict.keys()))
                     antivirals = st.radio("Do You Take Antivirals?",tuple(feature_dict.keys()))
                     fatique = st.radio("Do You Have Fatique",tuple(feature_dict.keys()))
                     spiders = st.radio("Presence of Spider Naeve",tuple(feature_dict.keys()))
@@ -122,7 +122,14 @@ def main():
                     albumin = st.number_input("Albumin",0.0,6.4)
                     protime = st.number_input("Prothrombin Time",0.0,100.0)
                     histology = st.radio("Histology",tuple(feature_dict.keys()))
-
+                    feature_list = [age,get_value(sex,gender_dict),get_fvalue(steroid),get_fvalue(antivirals),get_fvalue(spiders)
+                           ,get_fvalue(ascites),get_fvalue(varices),birirubin,alk_phosphate,sgot,albumin,int(protime),get_fvalue(histology)]
+                    st.write(len(feature_list))
+                    st.write(feature_list)
+                    pretty_result = {"age":age,"sex":sex,"steroid":steroid,"antivirals":antivirals,"fatique":fatique,"spiders":spiders,
+                                  "ascites":ascites , "varices":varices ,"bilirubin":bilirubin,"alk_phosphate":alk_phosphate,"sgot":sgot,
+                                  "albumin":albumin,"protime":protime,"histology":histology}
+                                         
 
 
 
