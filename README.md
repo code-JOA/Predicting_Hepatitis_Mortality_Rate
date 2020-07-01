@@ -30,4 +30,5 @@ https://archive.ics.uci.edu/ml/datasets/Hepatitis
 ![](https://forthebadge.com/images/badges/made-with-python.svg)
 
 [<img target="_blank" src="https://flask.palletsprojects.com/en/1.1.x/_images/flask-logo.png" width=170>](https://flask.palletsprojects.com/en/1.1.x/) [<img target="_blank" src="https://number1.co.za/wp-content/uploads/2017/10/gunicorn_logo-300x85.png" width=280>](https://gunicorn.org) [<img target="_blank" src="https://github.com/code-JOA/Predicting_Hepititis_Mortality_Rate/blob/master/streamlit_logo.png" width=280>](https://www.streamlit.io/)
+[<img target="_blank" src="https://openjsf.org/wp-content/uploads/sites/84/2019/10/jquery-logo-vertical_large_square.png" width=100>](https://jquery.com/)
 
