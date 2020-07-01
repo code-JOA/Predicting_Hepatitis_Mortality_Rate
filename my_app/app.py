@@ -60,6 +60,79 @@ def load_model(model_file):
     return loaded_model
 
 
+html_temp = """
+		<div style="background-color:{};padding:10px;border-radius:10px">
+		<h1 style="color:white;text-align:center;">Disease Mortality Prediction </h1>
+		<h5 style="color:white;text-align:center;">Hepatitis B </h5>
+		</div>
+		"""
+
+# Avatar Image using a url
+avatar1 ="https://www.w3schools.com/howto/img_avatar1.png"
+avatar2 ="https://www.w3schools.com/howto/img_avatar2.png"
+
+result_temp ="""
+	<div style="background-color:#464e5f;padding:10px;border-radius:10px;margin:10px;">
+	<h4 style="color:white;text-align:center;">Algorithm:: {}</h4>
+	<img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar" style="vertical-align: middle;float:left;width: 50px;height: 50px;border-radius: 50%;" >
+	<br/>
+	<br/>
+	<p style="text-align:justify;color:white">{} % probalibilty that Patient {}s</p>
+	</div>
+	"""
+
+result_temp2 ="""
+	<div style="background-color:#464e5f;padding:10px;border-radius:10px;margin:10px;">
+	<h4 style="color:white;text-align:center;">Algorithm:: {}</h4>
+	<img src="https://www.w3schools.com/howto/{}" alt="Avatar" style="vertical-align: middle;float:left;width: 50px;height: 50px;border-radius: 50%;" >
+	<br/>
+	<br/>
+	<p style="text-align:justify;color:white">{} % probalibilty that Patient {}s</p>
+	</div>
+	"""
+
+prescriptive_message_temp ="""
+	<div style="background-color:silver;overflow-x: auto; padding:10px;border-radius:5px;margin:10px;">
+		<h3 style="text-align:justify;color:black;padding:10px">Recommended Life style modification</h3>
+		<ul>
+		<li style="text-align:justify;color:black;padding:10px">Exercise Daily</li>
+		<li style="text-align:justify;color:black;padding:10px">Get Plenty of Rest</li>
+		<li style="text-align:justify;color:black;padding:10px">Exercise Daily</li>
+		<li style="text-align:justify;color:black;padding:10px">Avoid Alchol</li>
+		<li style="text-align:justify;color:black;padding:10px">Proper diet</li>
+		<ul>
+		<h3 style="text-align:justify;color:black;padding:10px">Medical Mgmt</h3>
+		<ul>
+		<li style="text-align:justify;color:black;padding:10px">Consult your doctor</li>
+		<li style="text-align:justify;color:black;padding:10px">Take your interferons</li>
+		<li style="text-align:justify;color:black;padding:10px">Go for checkups</li>
+		<ul>
+	</div>
+	"""
+
+
+descriptive_message_temp ="""
+	<div style="background-color:silver;overflow-x: auto; padding:10px;border-radius:5px;margin:10px;">
+		<h3 style="text-align:justify;color:black;padding:10px">Definition</h3>
+		<p>Hepatitis B is a viral infection that attacks the liver and can cause both acute and chronic disease.</p>
+	</div>
+	"""
+
+@st.cache
+def load_image(img):
+	im =Image.open(os.path.join(img))
+	return im
+
+
+def change_avatar(sex):
+	if sex == "male":
+		avatar_img = 'img_avatar.png'
+	else:
+		avatar_img = 'img_avatar2.png'
+	return avatar_img
+
+
+
 def main():
     """Mortality Prediction App"""
     st.title("Hepatitis Disease Mortality Prediction App")
@@ -158,11 +231,12 @@ def main():
     					# 	# final_result = get_key(prediction,prediction_label)
                         if prediction == 1:
                             st.warning("Patient Dies")
-    					# 		pred_probability_score = {"Die":pred_prob[0][0]*100,"Live":pred_prob[0][1]*100}
-    					# 		st.subheader("Prediction Probability Score using {}".format(model_choice))
-    					# 		st.json(pred_probability_score)
-    					# 		st.subheader("Prescriptive Analytics")
-    					# 		st.markdown(prescriptive_message_temp,unsafe_allow_html=True)
+                            pred_probability_score = {"Die":pred_prob[0][0]*100 , "Live":pred_prob[0][1]*100}
+                            st.subheader("Prediction Probability Score using {}".format(model_choice))
+                            st.json(pred_probability_score)
+    						st.subheader("Prescriptive Analytics")
+                            st.markdonw(prescriptive_message_temp,unsafe_allow_html=True)
+
                         else:
                             st.success("Patient Lives")
                             pred_probability_score = {"Die":pred_prob[0][0]*100,"Live":pred_prob[0][1]*100}
@@ -201,18 +275,6 @@ def main():
                         plt.figure(figsize=(20,10))
                         fig = exp.as_pyplot_figure()
                         st.pyplot()
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
