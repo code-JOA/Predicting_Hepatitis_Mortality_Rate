@@ -17,6 +17,11 @@ https://archive.ics.uci.edu/ml/datasets/Hepatitis
 + Productionize with Streamlit
 
 ## End-to-end Wordflow
-![][https://github.com/code-JOA/Predicting_Hepititis_Mortality_Rate/blob/master/workflow.png]
+![](https://forthebadge.com/images/badges/made-with-python.svg)
+
+
+<p align="center">
+  <img width="700" height="600" src="https://github.com/code-JOA/Predicting_Hepititis_Mortality_Rate/blob/master/workflow.png">
+</p>
 
 
